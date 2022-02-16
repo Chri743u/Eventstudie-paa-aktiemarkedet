@@ -25,6 +25,7 @@ for(i in -46:12)
   afkast_Ri=afkast_Ri*Dagsafkast_Ri
 }
 
+<<<<<<< HEAD
 print(paste("Afkast i procent: ",format(round((afkast_Ri-1)*100, 2), nsmall = 2)))
 print(paste("Afkast ved investering á 10.000.000: ",format(round((afkast_Ri-1)*10000000, 2), nsmall = 2)))
 print(afkast_Ri-1)
@@ -55,3 +56,9 @@ for(i in 1:30)
 print(paste("Afkast i procent: ",format(round((afkast_Rm-1)*100, 2), nsmall = 2,big.mark = ",")))
 print(paste("Afkast ved investering á 10,000,000: ",format(round((afkast_Rm-1)*10000000, 2), nsmall = 2,big.mark = ",")))
 
+=======
+print(paste("Afkast i procent: ",format(round((afkast-1)*100, 2), nsmall = 2)))
+print(paste("Afkast ved investering á 10.000.000: ",format(round((afkast-1)*10000000, 2), nsmall = 2)))
+
+#blabla
+>>>>>>> 47baab1333ec8b0a41f2ffd7acc12de9b027522e
