@@ -18,3 +18,5 @@ for(i in -46:12)
 
 print(paste("Afkast i procent: ",format(round((afkast-1)*100, 2), nsmall = 2)))
 print(paste("Afkast ved investering á 10.000.000: ",format(round((afkast-1)*10000000, 2), nsmall = 2)))
+
+#blablabla
