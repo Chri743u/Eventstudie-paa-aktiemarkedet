@@ -38,3 +38,5 @@ print(pval) #pval=0.44, da p>0.05 fail to reject (Ronald A. Fisher udviklede P-v
 
 VCL95pct=cbind(muhat-qt(0.975,L1-1)*stderror,muhat-qt(0.025,L1-1)*stderror)
 print(VCL95pct) #alle værdier indenfor intervallet afvises ikke
+
+#modelkontrol
