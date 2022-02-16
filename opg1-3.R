@@ -1,3 +1,9 @@
+
+rm(list = ls()) # Clear environment
+cat("\014")  # Clear console # ctrl+L 
+
+load("BerkHathLubrizol.rda") #loader datasettet fra wd
+
 #Den korte udgave af opg.1:
 
 VRi=BerkHathLubrizol$Ri #180x1 vektor
@@ -40,3 +46,4 @@ VCL95pct=cbind(muhat-qt(0.975,L1-1)*stderror,muhat-qt(0.025,L1-1)*stderror)
 print(VCL95pct) #alle værdier indenfor intervallet afvises ikke
 
 #modelkontrol
+
