@@ -2,13 +2,13 @@
 rm(list = ls()) # Clear environment
 cat("\014")  # Clear console # ctrl+L 
 
-load("BerkHathLubrizol.rda") #loader datasettet fra wd
+BerkHathLubrizol = data.frame(BerkHathLubrizol_text)
 
 #Den korte udgave af opg.1:
 
 VRi=BerkHathLubrizol$Ri #180x1 vektor
 VRm=BerkHathLubrizol$Rm #180x1 vektor
-ValueL=10*(10^6)*prod((1+VRi[105:163])) #værdi af Lubriuzol
+ValueL=10*(10^6)*prod((1+VRi[105:163])) #værdi af Lubrizol
 print(ValueL)
 ValueSP=10*(10^6)*prod((1+VRm[105:163])) #Værdi af S&P
 print(ValueSP)
@@ -46,4 +46,8 @@ VCL95pct=cbind(muhat-qt(0.975,L1-1)*stderror,muhat-qt(0.025,L1-1)*stderror)
 print(VCL95pct) #alle værdier indenfor intervallet afvises ikke
 
 #modelkontrol
+qqnorm(VY)
+qqline(VY)
+
+#Opg. 3
 
