@@ -1,5 +1,5 @@
 
-rm(list = ls()) # Clear environment
+#rm(list = ls()) # Clear environment
 cat("\014")  # Clear console # ctrl+L 
 
 BerkHathLubrizol = data.frame(BerkHathLubrizol_text)
@@ -36,7 +36,7 @@ sigma2_zetahat=sum((VY-muhat)^2)/(L1-1) #skal bruge mindst 3 observationer for a
 
 #hypotesetest: H_0 : mu=0
 #t-test
-stderror=sqrt(sigma2_zetahat)/sqrt(L1)
+stderror=sqrt(sigma2_zetahat)
 teststat=abs(muhat-0)/stderror #minus 0 fordi vi har sat mu=0 i nulhypotesen
 pval=2*(1-pt(teststat,df=L1-1)) #2x fordi det er både store og små værdier der er kritiske (den er dobbeltsidet).
 #p-værdi måler sandsynlighed for at vi oplever der er noget som en endnu mere usandsynlighed???
@@ -45,9 +45,38 @@ print(pval) #pval=0.44, da p>0.05 fail to reject (Ronald A. Fisher udviklede P-v
 VCL95pct=cbind(muhat-qt(0.975,L1-1)*stderror,muhat-qt(0.025,L1-1)*stderror)
 print(VCL95pct) #alle værdier indenfor intervallet afvises ikke
 
+
 #modelkontrol
+
 qqnorm(VY)
 qqline(VY)
 
-#Opg. 3
+#Opg. 4
+1-pnorm(0.06, muhat,stderror)
+#Infinitesimal lille p-værdi, så vi afventer respons fra David 
+#om vi skal finde den 10^-x lille værdi?
+
+#Opg. 5
+linmod = lm(VY ~ VZ, data = BerkHathLubrizol)
+
+VZ=VRm[1:100] #L1x1 vektor
+
+Xmat <- cbind(rep(1, 100), VZ)
+(betahat <- solve(t(Xmat) %*% Xmat) %*% (t(Xmat) %*% VY))
+(sigma2hat <- (1/(100 - 3)) * sum((VY - Xmat %*% betahat)^2))
+
+qqnorm(VZ)
+qqline(VZ)
+
+alpha = betahat[1]
+beta = betahat[2]
+
+confint(linmod)
+
+
+
+#Opg. 6
+
+
+
 
