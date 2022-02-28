@@ -62,6 +62,7 @@ linmod = lm(VY ~ VM, data = BerkHathLubrizol)
 VM=VRm[1:100] #L1x1 vektor
 
 Xmat <- cbind(rep(1, 100), VM)
+#Proposition 5.6 (OLS estimator) - i Lecture notes fra SS (s.46)
 (betahat <- solve(t(Xmat) %*% Xmat) %*% (t(Xmat) %*% VY))
 (sigma2hat <- (1/(100 - 3)) * sum((VY - Xmat %*% betahat)^2))
 
