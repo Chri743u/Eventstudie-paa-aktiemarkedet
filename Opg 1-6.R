@@ -57,26 +57,39 @@ qqline(VY)
 #om vi skal finde den 10^-x lille værdi?
 
 #Opg. 5
-linmod = lm(VY ~ VZ, data = BerkHathLubrizol)
+linmod = lm(VY ~ VM, data = BerkHathLubrizol)
 
-VZ=VRm[1:100] #L1x1 vektor
+VM=VRm[1:100] #L1x1 vektor
 
-Xmat <- cbind(rep(1, 100), VZ)
+Xmat <- cbind(rep(1, 100), VM)
+#Proposition 5.6 (OLS estimator) - i Lecture notes fra SS (s.46)
 (betahat <- solve(t(Xmat) %*% Xmat) %*% (t(Xmat) %*% VY))
 (sigma2hat <- (1/(100 - 3)) * sum((VY - Xmat %*% betahat)^2))
 
-qqnorm(VZ)
-qqline(VZ)
+qqnorm(VM)
+qqline(VM)
 
 alpha = betahat[1]
 beta = betahat[2]
 
 confint(linmod)
 
-
+(Exp_val = round(c(VM*beta+alpha), 5))
 
 #Opg. 6
+(VY_2 = VRi[101:181])
+(VM_2 = VRm[101:181])
 
+(Exp_val_2 = round(c(VM_2*beta+alpha), 5))
 
+epsilon = VY_2 - Exp_val_2 
 
+qqnorm(epsilon)
 
+p = ecdf(epsilon)
+
+(x_ax = seq(-50,30))
+
+cepsilon = cumsum(epsilon)
+
+plot(x_ax,cepsilon)
