@@ -42,6 +42,7 @@ hist(vbetahat, xlim=c(-1,3), breaks=25)
 CAR_BAR=matrix(0,N,1)
 vCAR_mat=matrix(0,N,81)
 for (i in 1:N){
+<<<<<<< HEAD
   CAR_mat=cumsum(vepsilon__hat_STJ[i,])
   vCAR_mat[i,]=CAR_mat
 } 
@@ -51,12 +52,26 @@ for (i in 1:81){
 }
 x_seq=seq(-50,30)
 plot(x_seq, vCAR_bar)
+=======
+  CAR_BAR[i]=sum(vepsilon__hat_STJ[i,1:80])/N
+}
+plot(CAR_BAR)
+>>>>>>> 48fd29fa04c8fd10bdef50b417c5fa3ea8a20338
 
+#opg. 10
+L1=100
+sigma2hat_bar_STJ=sum(vsigma2hat_STJ)/N^2
+J1=CAR_BAR/sqrt(sigma2hat_bar_STJ)
+J1
+scar_hat=vepsilon__hat_STJ/sqrt(sigma2hat_bar_STJ)
+scar_bar=sum(scar_hat)/N
+J2=sqrt((L1-4)/(L1-2))*scar_bar
 
 #opg. 10
 L1=100 
 sigma2hat_bar_STJ=sum(vsigma2hat_STJ)/N^2
 
+<<<<<<< HEAD
 vCAR_tau=matrix(0,N,1)
 for (i in 1:N){
   vCAR_tau[i,]=vepsilon__hat_STJ[i,50]+vepsilon__hat_STJ[i,51]+vepsilon__hat_STJ[i,52]
@@ -74,6 +89,8 @@ scar_bar=sum(scar_hat)/N
 (pval_J2=2*(1-pt(J2,df=L1-1)))
 
 
+=======
+>>>>>>> 48fd29fa04c8fd10bdef50b417c5fa3ea8a20338
 #opg. 7
 
 gamma_start=rep(0,78)
