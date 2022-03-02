@@ -1,68 +1,65 @@
 rm(list = ls()) # Clear environment
-cat("\014")  # Clear console # ctrl+L 
+cat("\014")  # Clear console # ctrl+L
 
-BerkHathLubrizol = data.frame(BerkHathLubrizol)
+load(FinalData.rda)
 
-#Den korte udgave af opg.1:
+#Opg. 8
+N=897
+valphahat=matrix(0,N,1)
+vbetahat=matrix(0,N,1)
+vepsilon__hat_STJ=matrix(0,N,81)
+for (i in 1:N) {
+  FinalData_i=subset(FinalData,event_id==i)
+  VY=FinalData_i$Ri #L1x1 vektor
+  VX=FinalData_i$Rm #L1x1 vektor
+  Xi=cbind(rep(1, 100), VX[1:100])
+  thetahat <- solve(t(Xi) %*% Xi) %*% (t(Xi) %*% VY[1:100])
+  epsilon_hat=VY[1:100]-Xi%*%thetahat
+  sigma2hat <- (1/(100 - 2)) * (t(epsilon_hat)%*%epsilon_hat)
+  valphahat[i,1]=thetahat[1,1]
+  vbetahat[i,1]=thetahat[2,1]
+  
+  Xi_STJ=cbind(rep(1, 81), VX[101:181])
+  thetahat_STJ <- solve(t(Xi_STJ) %*% Xi_STJ) %*% (t(Xi_STJ) %*% VY[101:181])
+  epsilon_hat_STJ=VY[101:181]-Xi_STJ%*%thetahat_STJ
+  sigma2hat_STJ <- (1/(100 - 2)) * (t(epsilon_hat_STJ)%*%epsilon_hat_STJ)
+  vepsilon__hat_STJ[i,]=epsilon_hat_STJ
+}
 
-VRi=BerkHathLubrizol$Ri #180x1 vektor
-VRm=BerkHathLubrizol$Rm #180x1 vektor
-ValueL=10*(10^6)*prod((1+VRi[105:163])) #værdi af Lubrizol
-print(ValueL)
-ValueSP=10*(10^6)*prod((1+VRm[105:163])) #Værdi af S&P
-print(ValueSP)
-Diff=ValueL-ValueSP #værdiforskel på de to investeringer
-print(Diff)
+mu_a=mean(valphahat)
+mu_b=mean(vbetahat)
+sigma_a=sqrt((sum((valphahat-mu_a)^2))/N)
+sigma_b=sqrt((sum((vbetahat-mu_b)^2))/N)
 
-#Den korte udgave af opg.2:
+hist(valphahat, breaks=25)
+hist(vbetahat, xlim=c(-1,3), breaks=25)
 
-VRi1=BerkHathLubrizol$Ri #180x1 vektor
-VRm1=BerkHathLubrizol$Rm #180x1 vektor
-ValueL1=10*(10^6)*prod((1+VRi1[152:181])) #værdi af Lubriuzol
-print(ValueL1)
-ValueSP1=10*(10^6)*prod((1+VRm1[152:181])) #Værdi af S&P
-print(ValueSP1)
-Diff1=ValueL1-ValueSP1 #værdiforskel på de to investeringer
-print(Diff1)
-
-#Opg.3
-
-#spg. 3 estimationsperioden fra t=-151 til t=-51, estimer afkast i den periode og lav en hypotesetest
-VY=VRi[1:100] #L1x1 vektor
-L1=100
-muhat=mean(VY)
-sigma2_zetahat=sum((VY-muhat)^2)/(L1-1) #skal bruge mindst 3 observationer for at beregne varians
-
-#hypotesetest: H_0 : mu=0
-#t-test
-stderror=sqrt(sigma2_zetahat)
-teststat=abs(muhat-0)/stderror #minus 0 fordi vi har sat mu=0 i nulhypotesen
-pval=2*(1-pt(teststat,df=L1-1)) #2x fordi det er både store og små værdier der er kritiske (den er dobbeltsidet).
-#p-værdi måler sandsynlighed for at vi oplever der er noget som en endnu mere usandsynlighed???
-print(pval) #pval=0.44, da p>0.05 fail to reject (Ronald A. Fisher udviklede P-værdi) (p-værdi er modelkontrollen)
-
-VCL95pct=cbind(muhat-qt(0.975,L1-1)*stderror,muhat-qt(0.025,L1-1)*stderror)
-print(VCL95pct) #alle værdier indenfor intervallet afvises ikke
+#opg. 9
+# CAR_HAT=vepsilon_hat_STJ
+CAR_BAR=matrix(0,N,1)
+for (i in 1:N){
+  CAR_BAR[i]=sum(vepsilon__hat_STJ[i,])/N
+}
 
 
-#modelkontrol
 
-qqnorm(VY)
-qqline(VY)
 
-#Opg. 4
-1-pnorm(0.27, muhat,stderror)
-#Infinitesimal lille p-værdi, så vi afventer respons fra David 
-#om vi skal finde den 10^-x lille værdi?
 
-#Opg. 5
+
+  
+    for (i in 1:5){
+  FinalData_i=subset(FinalData,event_id==i)
+}
+
+
+
 VY=VRi[1:100] #L1x1 vektor
 VX=VRm[1:100] #L1x1 vektor
 linmod = lm(VY ~ VX, data = BerkHathLubrizol)
 
 Xi <- cbind(rep(1, 100), VX) #L2X2 vector med 1 taller på første række
 thetahat <- solve(t(Xi) %*% Xi) %*% (t(Xi) %*% VY) #er det ikke theta_hat? indeholder alpha på index [1] og beta på index [2]
-epsilon_hat=VY-Xi%*%thetahat #epsilon hat i estimations perioden
+epsilon_hat=VY-Xi%*%betahat #epsilon hat i estimations perioden
 sigma2hat <- (1/(100 - 2)) * (t(epsilon_hat)%*%epsilon_hat) #sigmahat^2 i estimationsperioden
 
 qqnorm(VX)#modelkontrol
@@ -73,13 +70,45 @@ beta = thetahat[2]
 
 confint(linmod) #95% confidence interval for linmod funktionen
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #Opg. 6
 (VY_STJ = VRi[101:181])#afkast for lubrizol i event-perioden
 (VX_STJ = VRm[101:181])#afkast for markedet i event-perioden
 
 Xi_STJ <- cbind(rep(1, 81), VX_STJ) #L2X2 vector med 1 taller på første række
 Xi_STJ
-epsilon_STJ = VY_STJ - Xi_STJ%*%thetahat
+epsilon_STJ = VY_STJ - Xi_STJ%*%betahat
 print(epsilon_STJ)
 epsilon_S = VY_STJ - (alpha+beta*VX_STJ)
 print(epsilon_S) 
@@ -110,14 +139,6 @@ J_1=sum(CAR)/sqrt(sum(sigma2hat)) #teststørrelsen J1 er givet
 print(J_1)
 J_2=sqrt((L1-4)/(L1-2))*SCAR_BAR #teststørrelsen J2 er givet
 print(J_2)
-
-
-
-
-
-
-
-
 
 
 
