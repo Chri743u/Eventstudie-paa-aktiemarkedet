@@ -8,6 +8,7 @@ N=897
 valphahat=matrix(0,N,1)
 vbetahat=matrix(0,N,1)
 vepsilon__hat_STJ=matrix(0,N,81)
+vsigma2hat_STJ=matrix(0,N,1)
 for (i in 1:N) {
   FinalData_i=subset(FinalData,event_id==i)
   VY=FinalData_i$Ri #L1x1 vektor
@@ -24,6 +25,7 @@ for (i in 1:N) {
   epsilon_hat_STJ=VY[101:181]-Xi_STJ%*%thetahat_STJ
   sigma2hat_STJ <- (1/(100 - 2)) * (t(epsilon_hat_STJ)%*%epsilon_hat_STJ)
   vepsilon__hat_STJ[i,]=epsilon_hat_STJ
+  vsigma2hat_STJ[i,]=sigma2hat_STJ
 }
 
 mu_a=mean(valphahat)
@@ -38,89 +40,19 @@ hist(vbetahat, xlim=c(-1,3), breaks=25)
 # CAR_HAT=vepsilon_hat_STJ
 CAR_BAR=matrix(0,N,1)
 for (i in 1:N){
-  CAR_BAR[i]=sum(vepsilon__hat_STJ[i,])/N
+  CAR_BAR[i]=sum(vepsilon__hat_STJ[i,1:80])/N
 }
+plot(CAR_BAR)
 
+#opg. 10
+L1=100
+sigma2hat_bar_STJ=sum(vsigma2hat_STJ)/N^2
+J1=CAR_BAR/sqrt(sigma2hat_bar_STJ)
+J1
+scar_hat=vepsilon__hat_STJ/sqrt(sigma2hat_bar_STJ)
+scar_bar=sum(scar_hat)/N
+J2=sqrt((L1-4)/(L1-2))*scar_bar
 
-
-
-
-
-  
-    for (i in 1:5){
-  FinalData_i=subset(FinalData,event_id==i)
-}
-
-
-
-VY=VRi[1:100] #L1x1 vektor
-VX=VRm[1:100] #L1x1 vektor
-linmod = lm(VY ~ VX, data = BerkHathLubrizol)
-
-Xi <- cbind(rep(1, 100), VX) #L2X2 vector med 1 taller på første række
-thetahat <- solve(t(Xi) %*% Xi) %*% (t(Xi) %*% VY) #er det ikke theta_hat? indeholder alpha på index [1] og beta på index [2]
-epsilon_hat=VY-Xi%*%betahat #epsilon hat i estimations perioden
-sigma2hat <- (1/(100 - 2)) * (t(epsilon_hat)%*%epsilon_hat) #sigmahat^2 i estimationsperioden
-
-qqnorm(VX)#modelkontrol
-qqline(VX)
-
-alpha = thetahat[1]
-beta = thetahat[2]
-
-confint(linmod) #95% confidence interval for linmod funktionen
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#Opg. 6
-(VY_STJ = VRi[101:181])#afkast for lubrizol i event-perioden
-(VX_STJ = VRm[101:181])#afkast for markedet i event-perioden
-
-Xi_STJ <- cbind(rep(1, 81), VX_STJ) #L2X2 vector med 1 taller på første række
-Xi_STJ
-epsilon_STJ = VY_STJ - Xi_STJ%*%betahat
-print(epsilon_STJ)
-epsilon_S = VY_STJ - (alpha+beta*VX_STJ)
-print(epsilon_S) 
-#to af de samme måder at lave epsilon_stjerne på i event-perioden, den ene er givet
-#i opgaven og den anden er mackinley formlen som der også bliver brugt i opgaven før
-
-qqnorm(epsilon_STJ) #modelkontrol
-qqline(epsilon_STJ)
-
-Event_vindue = seq(-50,30)
-cepsilon = cumsum(epsilon_STJ)
-plot(Event_vindue,cepsilon) #plot af den comulative sum af epsilon af eventperioden
 
 #opg. 7
 
