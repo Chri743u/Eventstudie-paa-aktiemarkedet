@@ -1,7 +1,7 @@
-rm(list = ls()) # Clear environment
+#rm(list = ls()) # Clear environment
 cat("\014")  # Clear console # ctrl+L 
 
-BerkHathLubrizol = data.frame(BerkHathLubrizol)
+BerkHathLubrizol = data.frame(BerkHathLubrizol_text)
 
 #Den korte udgave af opg.1:
 
@@ -97,20 +97,19 @@ plot(Event_vindue,cepsilon) #plot af den comulative sum af epsilon af eventperio
 
 gamma_start=rep(0,78)
 gamma=append(gamma_start, c(1,1,1),49) #for at lave en vector med 1 fra tau_1 til tau_2
-eps=c(epsilon_STJ) #vektorisere espilson_STJ
+eps=c(cepsilon) #vektorisere espilson_STJ
 CAR=t(gamma)*eps #trække epsilon værdierne ud fra tau_1 til tau_2
 CAR_BAR=sum(CAR) #summer over epsilon værdierne 
 #vi har sigma2hat fra opgave før, vi har at sigma2hat_subset(epsilon_i)=sigma2hat_subset(i)
-
+plot(eps)
 sig=c(sigma2hat) # vektorisering af sigma2hat
 SCAR=CAR/sqrt(sig) #scar_hat udregnes
 SCAR_BAR=sum(SCAR) #der summes over scar_hat, som giver scar_bar
 
-J_1=sum(CAR)/sqrt(sum(sigma2hat)) #teststørrelsen J1 er givet
-print(J_1)
-J_2=sqrt((L1-4)/(L1-2))*SCAR_BAR #teststørrelsen J2 er givet
-print(J_2)
-
+(J_1=sum(CAR)/sqrt(sum(sigma2hat))) #teststørrelsen J1 er givet
+(J_2=sqrt((L1-4)/(L1-2))*SCAR_BAR) #teststørrelsen J2 er givet
+(pval_J_1=2*(1-pt(J_1,df=L1-1)))
+(pval_J_2=2*(1-pt(J_2,df=L1-1)))
 
 
 
