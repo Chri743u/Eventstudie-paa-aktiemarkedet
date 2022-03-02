@@ -3,7 +3,7 @@ cat("\014")  # Clear console # ctrl+L
 
 BerkHathLubrizol = data.frame(BerkHathLubrizol_text)
 FinalData = load(Eventdatafull.rda)#de skal laves så de kan åbnes automatisk 
-
+#load selv data sættene ind og navngiv dem "BerkHathLubrizol" og "FinalData"
 #Den korte udgave af opg.1:
 
 VRi=BerkHathLubrizol$Ri #180x1 vektor
