@@ -1,9 +1,14 @@
 #rm(list = ls()) # Clear environment
-cat("\014")  # Clear console # ctrl+L 
+#cat("\014")  # Clear console # ctrl+L 
 
-BerkHathLubrizol = data.frame(BerkHathLubrizol)
-FinalData = load(Eventdatafull.Rda)#de skal laves så de kan åbnes automatisk 
-#load selv data sættene ind og navngiv dem "BerkHathLubrizol" og "FinalData"
+#importer datasæt fra github
+BHLURL <- "https://github.com/Chri743u/Eventstudie-paa-aktiemarkedet/blob/main/BerkHathLubrizol.Rda?raw=true"
+FullURL <- "https://github.com/Chri743u/Eventstudie-paa-aktiemarkedet/blob/main/EventdataFull.Rda?raw=true"
+CRPURL <- "https://github.com/Chri743u/Eventstudie-paa-aktiemarkedet/blob/main/CRSPCompustatdata.Rda?raw=true"
+load(url(BHLURL))
+load(url(FullURL))
+load(url(CRPURL))
+
 #Den korte udgave af opg.1:
 
 VRi=BerkHathLubrizol$Ri #180x1 vektor
@@ -172,4 +177,4 @@ scar_bar=sum(scar_hat)/N #scar bar formel i kinley pdf, som skalar
 (J2=sqrt((L1-4)/(L1-2))*scar_bar) #teststørrelse J2 formel i kinley pdf, som skalar
 (pval_J2=2*(1-pt(J2,df=L1-1))) #p-værdi med teststørrelse J2
 
-
+#Del 2
