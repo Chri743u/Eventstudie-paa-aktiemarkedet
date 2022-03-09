@@ -46,7 +46,6 @@ teststat=abs(muhat-0)/stderror #minus 0 fordi vi har sat mu=0 i nulhypotesen
 
 
 #modelkontrol
-
 qqnorm(VYi)
 qqline(VYi)
 
@@ -66,11 +65,12 @@ thetahat <- solve(t(Xim) %*% Xim) %*% (t(Xim) %*% VYi) #er det ikke theta_hat? i
 epsilon_hat=VYi-Xim%*%thetahat #epsilon hat i estimations perioden
 sigma2hat <- (1/(100 - 2)) * (t(epsilon_hat)%*%epsilon_hat) #sigmahat^2 i estimationsperioden
 
-qqnorm(VXm)#modelkontrol
+#modelkontrol
+qqnorm(VXm)
 qqline(VXm)
 
-alpha = thetahat[1] #alpha værdien der findes på førstekoordinatet på theta, tjekket på lm fct
-beta = thetahat[2] #alpha værdien der findes på andetkoordinatet på theta, tjekket på lm fct
+alpha = thetahat[1] #alpha-værdien der findes på førstekoordinatet på theta, tjekket på lm fct
+beta = thetahat[2] #beta-værdien der findes på andetkoordinatet på theta, tjekket på lm fct
 
 confint(linmod) #95% confidence interval for linmod funktionen
 
@@ -83,7 +83,8 @@ epsilon_S = VYi_STJ - (alpha+beta*VXm_STJ)
 #to af de samme måder at lave epsilon_stjerne på i event-perioden, den ene er givet
 #i opgaven og den anden er mackinley formlen som der også bliver brugt i opgaven før
 
-qqnorm(epsilon_S) #modelkontrol
+#modelkontrol
+qqnorm(epsilon_S)
 qqline(epsilon_S)
 
 Event_vindue = seq(-50,30) # en sekvens der bliver brugt til at bestemme x-aksen i vores plot
@@ -96,7 +97,6 @@ gamma=append(gamma_start, c(1,1,1),49) #for at lave en vector med 1 fra tau_1 ti
 
 V_i=diag(81)*c(sigma2hat)+c(Xim_STJ%*%solve(t(Xim)%*%Xim)%*%t(Xim_STJ))*c(sigma2hat)
 Var_carbar=t(gamma)%*%V_i%*%gamma
-
 
 CAR7=sum(t(gamma)*epsilon_S) #trække epsilon værdierne ud fra tau_1 til tau_2
 CAR_BAR7=CAR7 #summer over epsilon værdierne 
@@ -112,10 +112,10 @@ SCAR_BAR7=SCAR7 #der summes over scar_hat, som giver scar_bar
 
 #Opg. 8
 N=897
-valphahat=matrix(0,N,1) #en tome matrice der bruges til at opbevare alpha'er der fås i for loopet
-vbetahat=matrix(0,N,1) #en tome matrice der bruges til at opbevare beta'er der fås i for loopet
-vepsilon__hat_STJ=matrix(0,N,81) #en tome matrice der bruges til at opbevare epsilon'er der fås i for loopet
-vsigma2hat_STJ=matrix(0,N,1) #en tome matrice der bruges til at opbevare sigma^2'er der fås i for loopet
+valphahat=matrix(0,N,1) #en tom matrice der bruges til at opbevare alpha'er der fås i for loopet
+vbetahat=matrix(0,N,1) #en tom matrice der bruges til at opbevare beta'er der fås i for loopet
+vepsilon__hat_STJ=matrix(0,N,81) #en tom matrice der bruges til at opbevare epsilon'er der fås i for loopet
+vsigma2hat_STJ=matrix(0,N,1) #en tom matrice der bruges til at opbevare sigma^2'er der fås i for loopet
 for (i in 1:N) {
   FinalData_i=subset(FinalData,event_id==i) #får loopet til at fokusere på en eventperiode af gangen
   VY=FinalData_i$Ri #L1x1 vektor
@@ -178,3 +178,4 @@ scar_bar=sum(scar_hat)/N #scar bar formel i kinley pdf, som skalar
 (pval_J2=2*(1-pt(J2,df=L1-1))) #p-værdi med teststørrelse J2
 
 #Del 2
+
