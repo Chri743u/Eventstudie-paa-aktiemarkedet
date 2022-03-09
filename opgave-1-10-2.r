@@ -1,5 +1,5 @@
-#rm(list = ls()) # Clear environment
-#cat("\014")  # Clear console # ctrl+L 
+rm(list = ls()) # Clear environment
+cat("\014")  # Clear console # ctrl+L 
 
 #importer datasæt fra github
 BHLURL <- "https://github.com/Chri743u/Eventstudie-paa-aktiemarkedet/blob/main/BerkHathLubrizol.Rda?raw=true"
@@ -116,6 +116,7 @@ valphahat=matrix(0,N,1) #en tom matrice der bruges til at opbevare alpha'er der 
 vbetahat=matrix(0,N,1) #en tom matrice der bruges til at opbevare beta'er der fås i for loopet
 vepsilon__hat_STJ=matrix(0,N,81) #en tom matrice der bruges til at opbevare epsilon'er der fås i for loopet
 vsigma2hat_STJ=matrix(0,N,1) #en tom matrice der bruges til at opbevare sigma^2'er der fås i for loopet
+vVAR_car=matrix(0,N,1)
 for (i in 1:N) {
   FinalData_i=subset(FinalData,event_id==i) #får loopet til at fokusere på en eventperiode af gangen
   VY=FinalData_i$Ri #L1x1 vektor
@@ -129,12 +130,16 @@ for (i in 1:N) {
   
   #den næste del af for loopet bliver benyttet i en længere hen opgave (9)
   Xi_STJ=cbind(rep(1, 81), VX[101:181]) #L2x2 vektor med 1 taller på første række
-  thetahat_STJ <- solve(t(Xi_STJ) %*% Xi_STJ) %*% (t(Xi_STJ) %*% VY[101:181]) #theta med alpha på [1] og beta på [2]
-  epsilon_hat_STJ=VY[101:181]-Xi_STJ%*%thetahat_STJ #de abnormale afkast af vores forskellige events i eventperioden
+  epsilon_hat_STJ=VY[101:181]-Xi_STJ%*%thetahat #de abnormale afkast af vores forskellige events i eventperioden
   sigma2hat_STJ <- (1/(100 - 2)) * (t(epsilon_hat_STJ)%*%epsilon_hat_STJ) #udregning af sigma2hat
   vepsilon__hat_STJ[i,]=epsilon_hat_STJ #der lagres epsilon'er in i matricen "vepsilon_hat_STJ"
   vsigma2hat_STJ[i,]=sigma2hat_STJ #der lagres sigma2hat'er in i matricen "vsigma2hat_STJ"
+  V_i=diag(81)*c(sigma2hat)+Xi_STJ%*%solve(t(Xi)%*%Xi)%*%t(Xi_STJ)*c(sigma2hat)
+  vVAR_car[i,]=t(gamma)%*%V_i%*%gamma
+  
 }
+
+
 
 (mu_a=mean(valphahat)) #mean af datasættet alpha_hat
 (mu_b=mean(vbetahat)) #mean af datasættet beta_hat
@@ -160,19 +165,18 @@ plot(x_seq, vCAR_bar) #plot af CAR_bar(tau(1), tau(2))
 
 #opg. 10
 L1=100 #længde af estimationsvindue
-sigma2hat_bar_STJ=sum(vsigma2hat_STJ)/N^2 #sigma2 med både hat og bar
+Varians=sum(vVAR_car)/N^2
 
 vCAR_tau=matrix(0,N,1) #tom matrice der cumulativt summer over epsilon værdierne fra tau(1)-tau(2)
 #(koden her er suboptimal for cumsum af et bestemt interval af indexer i en vektor)
 for (i in 1:N){
-  vCAR_tau[i,]=vepsilon__hat_STJ[i,50]+vepsilon__hat_STJ[i,51]+vepsilon__hat_STJ[i,52]
+  vCAR_tau[i,]=sum(vepsilon__hat_STJ[i,][50:52])
 }
-CAR_bar_tau=mean(vCAR_tau) #CAR_bar der tager gennemsnittet af alle værdier i den Nx1 matrice vCAR_tau 
-
-(J1=sum(CAR_bar_tau)/sqrt(sigma2hat_bar_STJ)) #teststørrelse, formel i kinley pdf
+vCAR_bar_tau=sum(vCAR_tau)/N
+(J1=vCAR_bar_tau/sqrt(Varians)) #teststørrelse, formel i kinley pdf
 (pval_J1=2*(1-pt(J1,df=L1-1))) #p-værdi med teststørrelse J1
-
-scar_hat=vCAR_tau/sqrt(sigma2hat_bar_STJ) #scar formel i kinley pdf (1:897 vektor)
+sigma2hat
+scar_hat=vCAR_tau/sqrt(c(Varians)) #scar formel i kinley pdf (1:897 vektor)
 scar_bar=sum(scar_hat)/N #scar bar formel i kinley pdf, som skalar
 (J2=sqrt((L1-4)/(L1-2))*scar_bar) #teststørrelse J2 formel i kinley pdf, som skalar
 (pval_J2=2*(1-pt(J2,df=L1-1))) #p-værdi med teststørrelse J2
