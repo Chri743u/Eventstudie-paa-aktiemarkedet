@@ -1,5 +1,5 @@
 #rm(list = ls()) # Clear environment
-cat("\014")  # Clear console # ctrl+L 
+#cat("\014")  # Clear console # ctrl+L 
 
 BerkHathLubrizol = data.frame(BerkHathLubrizol_text)
 
