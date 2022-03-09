@@ -1,8 +1,8 @@
 #rm(list = ls()) # Clear environment
 cat("\014")  # Clear console # ctrl+L 
 
-BerkHathLubrizol = data.frame(BerkHathLubrizol_text)
-FinalData = load(Eventdatafull.rda)#de skal laves så de kan åbnes automatisk 
+BerkHathLubrizol = data.frame(BerkHathLubrizol)
+FinalData = load(Eventdatafull.Rda)#de skal laves så de kan åbnes automatisk 
 #load selv data sættene ind og navngiv dem "BerkHathLubrizol" og "FinalData"
 #Den korte udgave af opg.1:
 
@@ -100,7 +100,7 @@ CAR_BAR7=CAR7 #summer over epsilon værdierne
 SCAR7=CAR7/sqrt(Var_carbar) #scar_hat udregnes
 SCAR_BAR7=SCAR7 #der summes over scar_hat, som giver scar_bar
 
-(J_1=CAR7/(Var_carbar)) #teststørrelsen J_1 er givet
+(J_1=CAR7/sqrt(Var_carbar)) #teststørrelsen J_1 er givet
 (J_2=sqrt((L1-4)/(L1-2))*SCAR_BAR7) #teststørrelsen J_2 er givet
 (pval_J_1=2*(1-pt(J_1,df=L1-1))) #p-værdien givet J_1
 (pval_J_2=2*(1-pt(J_2,df=L1-1))) #p-værdien givet J_2
