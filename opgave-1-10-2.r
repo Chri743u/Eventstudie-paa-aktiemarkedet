@@ -1,4 +1,4 @@
-#rm(list = ls()) # Clear environment
+rm(list = ls()) # Clear environment
 cat("\014")  # Clear console # ctrl+L 
 
 #importer datasæt fra github

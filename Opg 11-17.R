@@ -1,53 +1,49 @@
 CPRURL <- "https://github.com/Chri743u/Eventstudie-paa-aktiemarkedet/blob/main/CRSPCompustatdata.Rda?raw=true"
+load(url(CRPURL))
 
-df = datacrspcompustat_final
+df = data.frame(datacrspcompustat_final)
 
+#opgave 11
 id_CAR_tau=data.frame(cbind(seq(1:897),vCAR_tau,vVAR_car))
 
 colnames(id_CAR_tau) <- c("event_id","car_tau","var_car")
 merged_data = merge(x=df,y=id_CAR_tau,by.x="event_id",all.x=TRUE)
 n=724
 Car_hat_724=merged_data$car_tau
-Car_bar_724=sum(Car_hat_724)/n
+(Car_bar_724=sum(Car_hat_724)/n)
 Var_car_724=merged_data$var_car
-std_car_724=sum(Var_car_724)/n^2
+(std_car_724=sqrt(sum(Var_car_724)/n^2))
 round(std_car_724,digits=6)
 
 mean(id_CAR_tau$car_tau)
 x=pt(Car_bar_724,n)
-x
 
-(VCL95pct=cbind(Car_bar_724-qt(0.975,100-1)*std_car_724,Car_bar_724-qt(0.025,100-1)*std_car_724))
+qqplot(Car_hat_724, vCAR_tau)
 
-Car_bar_724
-?pt
-#Opg. 8
-N=724
-valphahat=matrix(0,N,1)
-vbetahat=matrix(0,N,1)
-vepsilon__hat_STJ=matrix(0,N,81)
-vsigma2hat_STJ=matrix(0,N,1)
-for (i in 1:N) {
-  FinalData_i=subset(CPRURL,event_id==i)
-  VY=FinalData_i$Ri #L1x1 vektor
-  VX=FinalData_i$Rm #L1x1 vektor
-  Xi=cbind(rep(1, 100), VX[1:100])
-  thetahat <- solve(t(Xi) %*% Xi) %*% (t(Xi) %*% VY[1:100])
-  epsilon_hat=VY[1:100]-Xi%*%thetahat
-  sigma2hat <- (1/(100 - 2)) * (t(epsilon_hat)%*%epsilon_hat)
-  valphahat[i,1]=thetahat[1,1]
-  vbetahat[i,1]=thetahat[2,1]
-  
-  Xi_STJ=cbind(rep(1, 81), VX[101:181])
-  thetahat_STJ <- solve(t(Xi_STJ) %*% Xi_STJ) %*% (t(Xi_STJ) %*% VY[101:181])
-  epsilon_hat_STJ=VY[101:181]-Xi_STJ%*%thetahat_STJ
-  sigma2hat_STJ <- (1/(100 - 2)) * (t(epsilon_hat_STJ)%*%epsilon_hat_STJ)
-  vepsilon__hat_STJ[i,]=epsilon_hat_STJ
-  vsigma2hat_STJ[i,]=sigma2hat_STJ
-}
-valphahat
-vbetahat
-mu_a=mean(valphahat)
-mu_b=mean(vbetahat)
-sigma_a=sqrt((sum((valphahat-mu_a)^2))/N)
-sigma_b=sqrt((sum((vbetahat-mu_b)^2))/N)
+(mean_diff=abs(mean(Car_hat_724)-mean(vCAR_tau)))
+
+#opgave 12
+
+Yi_724=Car_hat_724
+Xi_724=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE)
+Xi_724
+
+(theta <- solve(t(Xi_724)%*%Xi_724,tol=1e-22)%*%t(Xi_724)%*%Yi_724)
+#christian kigger på resten
+
+
+
+#opgave 13
+
+new<-df$Market2Book
+new[new>0]<-0
+new[new<0]<-1
+Xi_724_negbv=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, new)
+(theta <- solve(t(Xi_724_negbv)%*%Xi_724_negbv,tol=1e-22)%*%t(Xi_724_negbv)%*%Yi_724)
+#(fortolkning) dette fortæller os at hvis et selvskab har en negativ market2book value vil deres car_hat være 0.05 højere, svarende til 5%
+
+#opgave 14
+fin_ins=ifelse(as.numeric(substr(df$NAICS,1,2))==52,1,0)
+fin_ins
+
+
