@@ -45,5 +45,28 @@ Xi_724_negbv=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, new)
 #opgave 14
 fin_ins=ifelse(as.numeric(substr(df$NAICS,1,2))==52,1,0)
 fin_ins
+Xi_724_finins=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, fin_ins)
+(theta <- solve(t(Xi_724_finins)%*%Xi_724_finins,tol=1e-22)%*%t(Xi_724_finins)%*%Yi_724)
+
+#Opgave 15
+hist(df$Size)
+lnSize = log(df$Size)
+hist(lnSize)
+
+#Opgave 16
+Xi_724_size = cbind(rep(1,724),lnSize)
+(theta <- solve(t(Xi_724_size)%*%Xi_724_size,tol=1e-22)%*%t(Xi_724_size)%*%Yi_724)
+size_alpha = theta[1]
+size_beta = theta[2]
+size_epsilon = (Yi_724-(size_alpha+size_beta*Xi_724_size))
 
 
+plot(lnSize,size_epsilon[,2])
+plot(lnSize,Yi_724)
+epsDiag=diag((size_epsilon[,2])^2)
+epsDiag
+
+whiteEstimator1 = (solve(t(Xi_724_size)%*%Xi_724_size)%*%t(Xi_724_size)%*%epsDiag%*%Xi_724_size%*%solve(t(Xi_724_size)%*%Xi_724_size)) 
+whiteEstimator2 = (solve(t(Xi_724_size[,2])%*%Xi_724_size[,2])%*%t(Xi_724_size[,2])%*%epsDiag%*%Xi_724_size[,2]%*%solve(t(Xi_724_size[,2])%*%Xi_724_size[,2])) 
+whiteEstimator1
+whiteEstimator2
