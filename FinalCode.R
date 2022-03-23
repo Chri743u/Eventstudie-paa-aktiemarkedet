@@ -285,32 +285,31 @@ bot10 = tail(ordered_size,n=72)
 mean(top10$car_tau)
 mean(bot10$car_tau)
 
-#beregner L3
-L3=5
+
+#beregner L3 
+
+#### NYT HERFRA #######
+# De 10% øverste
+merged_top10 = merge(top10, FinalData, by = c("event_id"))
 
 merged_top10_id=merged_top10$event_id
 merged_top10_et=merged_top10$EventTime
 merged_top10_Ri=merged_top10$Ri
 merged_top10_Rm=merged_top10$Rm
-merged_top10 = merge(top10, FinalData, by = c("event_id"))
-merged_top10_4 = cbind(merged_top10_id, merged_top10_et, merged_top10_Ri, merged_top10_Rm)
-MD <- merged_top10_4[order(merged_top10_4[,1], merged_top10_4[,2]),]
 
-top10_id = sort(top10$event_id)
-top10_data = matrix(0,360,4)
+merged_top10_4 = data.frame(merged_top10_id, merged_top10_et, merged_top10_Ri, merged_top10_Rm)
+MD_top =merged_top10_4[(merged_top10_et>-6) & (merged_top10_et<0),]
+MD_top_ordered <- data.frame(MD_top[order(MD_top[,1], MD_top[,2]),])
 
-subset(merged_top10_4, )
+# De 10% nederste
+merged_bot10 = merge(bot10, FinalData, by = c("event_id"))
 
-for (i in 1:360){
-  
-  loop_id = MD[,1]==i
-  vektor4 = loop_id[,2]
-  MD2=cbind(vektor4[145:149],merged_top10_4[,1],merged_top10_4[,3],merged_top10_4[,4])
-}
-?subset
+merged_bot10_id=merged_bot10$event_id
+merged_bot10_et=merged_bot10$EventTime
+merged_bot10_Ri=merged_bot10$Ri
+merged_bot10_Rm=merged_bot10$Rm
 
-vMD=c(MD[,2])
+merged_bot10_4 = data.frame(merged_bot10_id, merged_bot10_et, merged_bot10_Ri, merged_bot10_Rm)
+MD_bot =merged_bot10_4[(merged_bot10_et>-6) & (merged_bot10_et<0),]
+MD_bot_ordered <- data.frame(MD_bot[order(MD_bot[,1], MD_bot[,2]),])
 
-vMD2=vMD[(vMD>-6) & (vMD<0)]
-
-bot10_id = sort(bot10$event_id)
