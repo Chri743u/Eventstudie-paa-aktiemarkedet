@@ -32,7 +32,7 @@ VYi=VRi[1:100] #L1x1 vektor
 L1=100
 (muhat=mean(VYi))
 (sigma2_zetahat=sum((VYi-muhat)^2)/(L1-1)) #skal bruge mindst 3 observationer for at beregne varians
-
+VYi-muhat
 #hypotesetest: H_0 : mu=0
 #t-test
 stderror=sqrt(sigma2_zetahat)
@@ -244,12 +244,73 @@ size_beta = theta[2]
 size_epsilon = (Yi_724-(size_alpha+size_beta*Xi_724_size))
 
 
+
 plot(lnSize,size_epsilon[,2])
 plot(lnSize,Yi_724)
 epsDiag=diag((size_epsilon[,2])^2)
+size_epsilon[,2]
 
 whiteEstimator1 = (solve(t(Xi_724_size)%*%Xi_724_size)%*%t(Xi_724_size)%*%epsDiag%*%Xi_724_size%*%solve(t(Xi_724_size)%*%Xi_724_size)) 
 whiteEstimator1
 
+#Hypotesetest
+size_muhat=mean(Yi_724)
+size_sigma2=sum((size_epsilon[,2])^2)/n
+size_stderror=sqrt(size_sigma2)
+size_teststat=abs(size_beta-0)/size_stderror #minus 0 fordi vi har sat mu=0 i nulhypotesen
+(size_pval=2*(1-pt(size_teststat,df=L1-1)))
+size_beta/(sqrt(size_sigma2/n))
 
+#white Hypotesetest
+white_size_epsilon =(Yi_724-(whiteEstimator1[1,1]+whiteEstimator1[2,2]*Xi_724_size))
+white_size_sigma2=sum((white_size_epsilon[,2]^2))/n
+white_size_stderror=sqrt(white_size_sigma2)
+white_size_teststat=abs(whiteEstimator1[2,2]-0)/white_size_stderror #minus 0 fordi vi har sat mu=0 i nulhypotesen
+(white_size_pval=2*(1-pt(white_size_teststat,df=L1-1)))
+plot(lnSize,white_size_epsilon[,2])
+head(sort(Yi_724))
+head(sort(white_size_epsilon[,2]))
+head(sort(size_epsilon[,2]))
+plot(lnSize,Yi_724, pch=1, col="blue", xlab = "", ylab = "")
+points(lnSize, white_size_epsilon[,2], pch=4, col="orange")
+points(lnSize, size_epsilon[,2], pch=20, col="magenta")
+?points
 
+#Opgave 18
+
+ordered_size <- merged_data[with(merged_data,order(-Size)),]
+top10 = head(ordered_size,n=72)
+bot10 = tail(ordered_size,n=72)
+#sammenligner
+mean(top10$car_tau)
+mean(bot10$car_tau)
+
+#beregner L3
+L3=5
+
+merged_top10_id=merged_top10$event_id
+merged_top10_et=merged_top10$EventTime
+merged_top10_Ri=merged_top10$Ri
+merged_top10_Rm=merged_top10$Rm
+merged_top10 = merge(top10, FinalData, by = c("event_id"))
+merged_top10_4 = cbind(merged_top10_id, merged_top10_et, merged_top10_Ri, merged_top10_Rm)
+MD <- merged_top10_4[order(merged_top10_4[,1], merged_top10_4[,2]),]
+
+top10_id = sort(top10$event_id)
+top10_data = matrix(0,360,4)
+
+subset(merged_top10_4, )
+
+for (i in 1:360){
+  
+  loop_id = MD[,1]==i
+  vektor4 = loop_id[,2]
+  MD2=cbind(vektor4[145:149],merged_top10_4[,1],merged_top10_4[,3],merged_top10_4[,4])
+}
+?subset
+
+vMD=c(MD[,2])
+
+vMD2=vMD[(vMD>-6) & (vMD<0)]
+
+bot10_id = sort(bot10$event_id)
