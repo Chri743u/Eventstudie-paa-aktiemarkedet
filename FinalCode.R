@@ -243,12 +243,9 @@ size_alpha = theta[1]
 size_beta = theta[2]
 size_epsilon = (Yi_724-(size_alpha+size_beta*Xi_724_size))
 
-
-
 plot(lnSize,size_epsilon[,2])
 plot(lnSize,Yi_724)
 epsDiag=diag((size_epsilon[,2])^2)
-size_epsilon[,2]
 
 whiteEstimator1 = (solve(t(Xi_724_size)%*%Xi_724_size)%*%t(Xi_724_size)%*%epsDiag%*%Xi_724_size%*%solve(t(Xi_724_size)%*%Xi_724_size)) 
 whiteEstimator1
@@ -268,13 +265,10 @@ white_size_stderror=sqrt(white_size_sigma2)
 white_size_teststat=abs(whiteEstimator1[2,2]-0)/white_size_stderror #minus 0 fordi vi har sat mu=0 i nulhypotesen
 (white_size_pval=2*(1-pt(white_size_teststat,df=L1-1)))
 plot(lnSize,white_size_epsilon[,2])
-head(sort(Yi_724))
-head(sort(white_size_epsilon[,2]))
-head(sort(size_epsilon[,2]))
 plot(lnSize,Yi_724, pch=1, col="blue", xlab = "", ylab = "")
 points(lnSize, white_size_epsilon[,2], pch=4, col="orange")
 points(lnSize, size_epsilon[,2], pch=20, col="magenta")
-?points
+
 
 #Opgave 18
 
@@ -285,31 +279,20 @@ bot10 = tail(ordered_size,n=72)
 mean(top10$car_tau)
 mean(bot10$car_tau)
 
+L3_car = vCAR_mat[,45:49]
+event_id = c(rep(1:897))
+L3_car_id = cbind(event_id, L3_car)
 
-#beregner L3 
+top10_id = cbind(rep(1),top10$event_id)
+bot10_id = cbind(rep(1),bot10$event_id)
+colnames(top10_id) <- c("mean","event_id")
+colnames(bot10_id) <- c("mean","event_id")
 
-#### NYT HERFRA #######
-# De 10% øverste
-merged_top10 = merge(top10, FinalData, by = c("event_id"))
+merged_top10 = merge(x=top10_id, y=L3_car_id, by=c("event_id"))
+merged_bot10 = merge(x=bot10_id, y=L3_car_id, by=c("event_id"))
 
-merged_top10_id=merged_top10$event_id
-merged_top10_et=merged_top10$EventTime
-merged_top10_Ri=merged_top10$Ri
-merged_top10_Rm=merged_top10$Rm
+merged_top10$mean <- ((rowSums(merged_top10[,3:7]))/5)
+merged_bot10$mean <- ((rowSums(merged_bot10[,3:7]))/5)
 
-merged_top10_4 = data.frame(merged_top10_id, merged_top10_et, merged_top10_Ri, merged_top10_Rm)
-MD_top =merged_top10_4[(merged_top10_et>-6) & (merged_top10_et<0),]
-MD_top_ordered <- data.frame(MD_top[order(MD_top[,1], MD_top[,2]),])
-
-# De 10% nederste
-merged_bot10 = merge(bot10, FinalData, by = c("event_id"))
-
-merged_bot10_id=merged_bot10$event_id
-merged_bot10_et=merged_bot10$EventTime
-merged_bot10_Ri=merged_bot10$Ri
-merged_bot10_Rm=merged_bot10$Rm
-
-merged_bot10_4 = data.frame(merged_bot10_id, merged_bot10_et, merged_bot10_Ri, merged_bot10_Rm)
-MD_bot =merged_bot10_4[(merged_bot10_et>-6) & (merged_bot10_et<0),]
-MD_bot_ordered <- data.frame(MD_bot[order(MD_bot[,1], MD_bot[,2]),])
-
+top10_l3_mean = mean(merged_top10$mean)
+top10_l3_mean = mean(merged_bot10$mean)
