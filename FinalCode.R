@@ -184,26 +184,26 @@ scar_bar=sum(scar_hat)/N #scar bar formel i kinley pdf, som skalar
 
 #Del 2
 
-df = data.frame(datacrspcompustat_final)
+df = data.frame(datacrspcompustat_final) #kortere navn at referere til
 
 #opgave 11
-id_CAR_tau=data.frame(cbind(seq(1:897),vCAR_tau,vVAR_car))
+id_CAR_tau=data.frame(cbind(seq(1:897),vCAR_tau,vVAR_car)) #binder vores CAR værdier sammen med en 1:897 sekvens i et dataframe
 
-colnames(id_CAR_tau) <- c("event_id","car_tau","var_car")
-merged_data = merge(x=df,y=id_CAR_tau,by.x="event_id",all.x=TRUE)
+colnames(id_CAR_tau) <- c("event_id","car_tau","var_car") #navngiver vores kolonner i vores dataframe givet på linje 190
+merged_data = merge(x=df,y=id_CAR_tau,by.x="event_id",all.x=TRUE) #merger CAR_tau og var_car på df
 n=724
-Car_hat_724=merged_data$car_tau
-(Car_bar_724=sum(Car_hat_724)/n)
-Var_car_724=merged_data$var_car
-(std_car_724=sqrt(sum(Var_car_724)/n^2))
-round(std_car_724,digits=6)
+Car_hat_724=merged_data$car_tau #tager kollonen ud med de mergede car_tau værdier, altså kun for de 724 virksomheder vi skal bruge
+(Car_bar_724=sum(Car_hat_724)/n) #udregner car_bar af dem
+Var_car_724=merged_data$var_car #tager kollonen ud med de mergede var_car værdier, altså kun for de 724 virksomheder vi skal bruge
+(std_car_724=sqrt(sum(Var_car_724)/n^2)) #udregner standard error for var_car
+round(std_car_724,digits=6) #afrunder
 
-mean(id_CAR_tau$car_tau)
-x=pt(Car_bar_724,n)
+mean(id_CAR_tau$car_tau) #indbygget function der tager mean
+x=pt(Car_bar_724,n) #probabilitien af t-fordelingen med Car_bar som teststørrelse
 
-qqplot(Car_hat_724, vCAR_tau)
+qqplot(Car_hat_724, vCAR_tau) #qqplotter vores Car værdier for vores datasæt med 897 virksomheder og 724 virksomheder
 
-(mean_diff=abs(mean(Car_hat_724)-mean(vCAR_tau)))
+(mean_diff=abs(mean(Car_hat_724)-mean(vCAR_tau))) #tager forskellen mellem mean af car værdierne for de forrige to nævnte datasæt
 
 #opgave 12
 
@@ -218,17 +218,18 @@ Xi_724
 
 #opgave 13
 
-new<-df$Market2Book
-new[new>0]<-0
-new[new<0]<-1
-Xi_724_negbv=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, new)
+new<-df$Market2Book #gør new til en kolonne med market 2 book værdierne
+new[new>0]<-0 #tager alle market2book værdierne der er større end 0 og sætter dem lig 0
+new[new<0]<-1 #tager alle market2book værdiern der er mindre end 0 og sætter dem lig 1
+Xi_724_negbv=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, new) #binder alle de kolonner vi ønsker ud fra vores datasæt sammen med vores nye 
+#dummyvariabel for market2book value 
 (theta <- solve(t(Xi_724_negbv)%*%Xi_724_negbv,tol=1e-22)%*%t(Xi_724_negbv)%*%Yi_724)
 #(fortolkning) dette fortæller os at hvis et selvskab har en negativ market2book value vil deres car_hat være 0.05 højere, svarende til 5%
 
 #opgave 14
-fin_ins=ifelse(as.numeric(substr(df$NAICS,1,2))==52,1,0)
+fin_ins=ifelse(as.numeric(substr(df$NAICS,1,2))==52,1,0) #sætter 1-taller ud for alle numre der starter med 52 (finanssektor) og 0-taller ud for resten
 fin_ins
-Xi_724_finins=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, fin_ins)
+Xi_724_finins=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, fin_ins) #binder
 (theta <- solve(t(Xi_724_finins)%*%Xi_724_finins,tol=1e-22)%*%t(Xi_724_finins)%*%Yi_724)
 
 #Opgave 15
