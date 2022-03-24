@@ -58,7 +58,7 @@ qqline(VYi)
 #Opg. 5
 VYi=VRi[1:100] #L1x1 vektor
 VXm=VRm[1:100] #L1x1 vektor
-linmod = lm(VYi ~ VXm, data = BerkHathLubrizol) #for at sammenligne vores svar med
+(linmod = lm(VYi ~ VXm, data = BerkHathLubrizol)) #for at sammenligne vores svar med
 
 Xim <- cbind(rep(1, 100), VXm) #L2X2 vector med 1 taller på første række
 thetahat <- solve(t(Xim) %*% Xim) %*% (t(Xim) %*% VYi) #er det ikke theta_hat? indeholder alpha på index [1] og beta på index [2]
@@ -206,40 +206,59 @@ qqplot(Car_hat_724, vCAR_tau) #qqplotter vores Car værdier for vores datasæt m
 (mean_diff=abs(mean(Car_hat_724)-mean(vCAR_tau))) #tager forskellen mellem mean af car værdierne for de forrige to nævnte datasæt
 
 #opgave 12
+df_2 = subset(merged_data, select=c("car_tau","event_id", "Size", "Market2Book", "Debt2Assets", "ROE"))
 
 Yi_724=Car_hat_724
-Xi_724=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE)
-Xi_724
+Xi_724=cbind(rep(1,724),merged_data$Size,merged_data$Market2Book,merged_data$Debt2Assets,merged_data$ROE)
+solve(t(Xi_724)%*%Xi_724,tol=1e-23)
+(betahat <- solve(t(Xi_724)%*%Xi_724,tol=1e-23)%*%t(Xi_724)%*%Yi_724)
+(sigmahat_2 <- 1/(n - 5 - 1) * sum((Yi_724-Xi_724%*%betahat)^2))
 
-(theta <- solve(t(Xi_724)%*%Xi_724,tol=1e-22)%*%t(Xi_724)%*%Yi_724)
-#christian kigger på resten
+alpha <- 0.05
+xTx.inv <- (solve(t(Xi_724) %*% Xi_724,tol=1e-23))
 
+for (i in 1:5){
+  confint = betahat[i] + c(-1, 1) * sqrt(sigmahat_2) * sqrt(xTx.inv[i, i]) *
+     qt(p = 1 - alpha/2, df = n - 3)
+  print(confint)
+}
 
+(linmod = lm(merged_data$car_tau ~ merged_data$Size + merged_data$Market2Book + merged_data$Debt2Assets + merged_data$ROE, data = merged_data)) 
+confint(linmod)
 
 #opgave 13
 
+<<<<<<< HEAD
 new<-df$Market2Book #gør new til en kolonne med market 2 book værdierne
 new[new>0]<-0 #tager alle market2book værdierne der er større end 0 og sætter dem lig 0
 new[new<0]<-1 #tager alle market2book værdiern der er mindre end 0 og sætter dem lig 1
 Xi_724_negbv=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, new) #binder alle de kolonner vi ønsker ud fra vores datasæt sammen med vores nye 
 #dummyvariabel for market2book value 
+=======
+new<-df$Market2Book
+new[new>0]<-0
+new[new<0]<-1
+Xi_724_negbv=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, new)
+
+>>>>>>> 4ae607399febab4151e9a28ac0a78403034d3b82
 (theta <- solve(t(Xi_724_negbv)%*%Xi_724_negbv,tol=1e-22)%*%t(Xi_724_negbv)%*%Yi_724)
 #(fortolkning) dette fortæller os at hvis et selvskab har en negativ market2book value vil deres car_hat være 0.05 højere, svarende til 5%
 
 #opgave 14
 fin_ins=ifelse(as.numeric(substr(df$NAICS,1,2))==52,1,0) #sætter 1-taller ud for alle numre der starter med 52 (finanssektor) og 0-taller ud for resten
 fin_ins
-Xi_724_finins=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, fin_ins) #binder
-(theta <- solve(t(Xi_724_finins)%*%Xi_724_finins,tol=1e-22)%*%t(Xi_724_finins)%*%Yi_724)
+Xi_724_finins=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, fin_ins) #binder fin_ins på de andre kolonner af data vi ønsker
+(theta <- solve(t(Xi_724_finins)%*%Xi_724_finins,tol=1e-22)%*%t(Xi_724_finins)%*%Yi_724) #udfører multipel regression og giver parametrene for de ønskede variable
 
 #Opgave 15
-hist(df$Size)
+hist(df$Size) #histogram over Size dataen
 lnSize = log(df$Size)
 hist(lnSize)
 
 #Opgave 16
 Xi_724_size = cbind(rep(1,724),lnSize)
 (theta <- solve(t(Xi_724_size)%*%Xi_724_size,tol=1e-22)%*%t(Xi_724_size)%*%Yi_724)
+(linmod_2 = lm(df))
 size_alpha = theta[1]
 size_beta = theta[2]
 size_epsilon = (Yi_724-(size_alpha+size_beta*Xi_724_size))
