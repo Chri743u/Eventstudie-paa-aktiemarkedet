@@ -1,4 +1,4 @@
-rm(list = ls()) # Clear environment
+#rm(list = ls()) # Clear environment
 cat("\014")  # Clear console # ctrl+L 
 
 #importer datasæt fra github
@@ -175,11 +175,11 @@ for (i in 1:N){
 vCAR_bar_tau=sum(vCAR_tau)/N
 (J1=vCAR_bar_tau/sqrt(Varians)) #teststørrelse, formel i kinley pdf
 (pval_J1=2*(1-pt(J1,df=L1-1))) #p-værdi med teststørrelse J1
-sigma2hat
+
 scar_hat=vCAR_tau/sqrt(c(Varians)) #scar formel i kinley pdf (1:897 vektor)
-scar_bar=sum(scar_hat)/N #scar bar formel i kinley pdf, som skalar
+scar_bar=sum(scar_hat)/N^2 #scar bar formel i kinley pdf, som skalar
 (J2=sqrt((L1-4)/(L1-2))*scar_bar) #teststørrelse J2 formel i kinley pdf, som skalar
 (pval_J2=2*(1-pt(J2,df=L1-1))) #p-værdi med teststørrelse J2
-
+scar_bar
 #Del 2
 
