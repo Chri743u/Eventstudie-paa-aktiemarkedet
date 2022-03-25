@@ -219,7 +219,7 @@ Yi_724=Car_hat_724
 Xi_724=cbind(rep(1,724),X2,X3,X4,X5)
 solve(t(Xi_724)%*%Xi_724,tol=1e-23)
 (betahat <- solve(t(Xi_724)%*%Xi_724,tol=1e-23)%*%t(Xi_724)%*%Yi_724)
-(sigmahat_2 <- 1/n*t(Yi_724-Xi_724%*%betahat1) %*% (Yi_724 - Xi_724%*%betahat))
+(sigmahat_2 <- 1/n*t(Yi_724-Xi_724%*%betahat) %*% (Yi_724 - Xi_724%*%betahat))
 (varhat_beta <- sigmahat_2[1:1]*solve(t(Xi_724)%*%Xi_724,tol=1e-23))
 
 alpha <- 0.05
