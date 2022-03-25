@@ -302,7 +302,7 @@ points(lnSize, white_size_epsilon[,2], pch=4, col="orange") #sætter punkter på
 points(lnSize, size_epsilon[,2], pch=20, col="magenta") #sætter punkter på plottet mellem lnsize og size_epsilon
 
 
-#Opgave 17
+#Opgave 18
 
 ordered_size <- merged_data[with(merged_data,order(-Size)),] #tager den merged data og sortere den så de største virksomheder er øverst og nedstiger derfra
 top10 = head(ordered_size,n=72) #tager de øverste 72 virksomheder
@@ -329,29 +329,3 @@ merged_bot10$mean <- ((rowSums(merged_bot10[,3:7]))/5) #merger linje 326 med en 
 top10_l3_mean = mean(merged_top10$mean) #tager mean over kolonnen der bliver skabt på 328
 top10_l3_mean = mean(merged_bot10$mean) #tager mean over kolonnen der bliver skabt på 329
 
-#Opgave 18
-
-ordered_size <- merged_data[with(merged_data,order(-Size)),]
-top10 = head(ordered_size,n=72)
-bot10 = tail(ordered_size,n=72)
-#sammenligner
-mean(top10$car_tau)
-mean(bot10$car_tau)
-
-L3_car = vCAR_mat[,45:49]
-event_id = c(rep(1:897))
-L3_car_id = cbind(event_id, L3_car)
-
-top10_id = cbind(rep(1),top10$event_id)
-bot10_id = cbind(rep(1),bot10$event_id)
-colnames(top10_id) <- c("mean","event_id")
-colnames(bot10_id) <- c("mean","event_id")
-
-merged_top10 = merge(x=top10_id, y=L3_car_id, by=c("event_id"))
-merged_bot10 = merge(x=bot10_id, y=L3_car_id, by=c("event_id"))
-
-merged_top10$mean <- ((rowSums(merged_top10[,3:7]))/5)
-merged_bot10$mean <- ((rowSums(merged_bot10[,3:7]))/5)
-
-top10_l3_mean = mean(merged_top10$mean)
-top10_l3_mean = mean(merged_bot10$mean)
