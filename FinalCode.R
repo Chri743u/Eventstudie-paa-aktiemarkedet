@@ -244,19 +244,17 @@ summary(linmod)
 
 #opgave 13
 
-<<<<<<< HEAD
 new<-df$Market2Book #gør new til en kolonne med market 2 book værdierne
 new[new>0]<-0 #tager alle market2book værdierne der er større end 0 og sætter dem lig 0
 new[new<0]<-1 #tager alle market2book værdiern der er mindre end 0 og sætter dem lig 1
 Xi_724_negbv=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, new) #binder alle de kolonner vi ønsker ud fra vores datasæt sammen med vores nye 
 #dummyvariabel for market2book value 
-=======
+
 new<-df$Market2Book
 new[new>0]<-0
 new[new<0]<-1
 Xi_724_negbv=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, new)
 
->>>>>>> 4ae607399febab4151e9a28ac0a78403034d3b82
 (theta <- solve(t(Xi_724_negbv)%*%Xi_724_negbv,tol=1e-22)%*%t(Xi_724_negbv)%*%Yi_724)
 #(fortolkning) dette fortæller os at hvis et selvskab har en negativ market2book value vil deres car_hat være 0.05 højere, svarende til 5%
 
