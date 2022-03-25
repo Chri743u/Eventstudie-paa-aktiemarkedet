@@ -206,25 +206,41 @@ qqplot(Car_hat_724, vCAR_tau) #qqplotter vores Car værdier for vores datasæt m
 (mean_diff=abs(mean(Car_hat_724)-mean(vCAR_tau))) #tager forskellen mellem mean af car værdierne for de forrige to nævnte datasæt
 
 #opgave 12
+
+#opgave 12
 df_2 = subset(merged_data, select=c("car_tau","event_id", "Size", "Market2Book", "Debt2Assets", "ROE"))
 
+X2=merged_data$Size
+X3=merged_data$Market2Book
+X4=merged_data$Debt2Assets
+X5=merged_data$ROE
+
 Yi_724=Car_hat_724
-Xi_724=cbind(rep(1,724),merged_data$Size,merged_data$Market2Book,merged_data$Debt2Assets,merged_data$ROE)
+Xi_724=cbind(rep(1,724),X2,X3,X4,X5)
 solve(t(Xi_724)%*%Xi_724,tol=1e-23)
 (betahat <- solve(t(Xi_724)%*%Xi_724,tol=1e-23)%*%t(Xi_724)%*%Yi_724)
-(sigmahat_2 <- 1/(n - 5 - 1) * sum((Yi_724-Xi_724%*%betahat)^2))
+(sigmahat_2 <- 1/n*t(Yi_724-Xi_724%*%betahat1) %*% (Yi_724 - Xi_724%*%betahat))
+(varhat_beta <- sigmahat_2[1:1]*solve(t(Xi_724)%*%Xi_724,tol=1e-23))
 
 alpha <- 0.05
 xTx.inv <- (solve(t(Xi_724) %*% Xi_724,tol=1e-23))
 
+#Confidence intervals
 for (i in 1:5){
   confint = betahat[i] + c(-1, 1) * sqrt(sigmahat_2) * sqrt(xTx.inv[i, i]) *
-     qt(p = 1 - alpha/2, df = n - 3)
-  print(confint)
+    qt(p = 1 - alpha/2, df = n - 3)
+  print(round(confint,digits=12),nsmall=50)
 }
-
+#P-values 
+for(i in 1:5){
+  teststat=abs(betahat[i]-0)/sqrt(varhat_beta[i,i]) #minus 0 fordi vi har sat mu=0 i nulhypotesen
+  (pval=2*(1-pt(teststat,df=L1-1)))
+  print(round(pval,digits=80))
+}
+#Cross validation
 (linmod = lm(merged_data$car_tau ~ merged_data$Size + merged_data$Market2Book + merged_data$Debt2Assets + merged_data$ROE, data = merged_data)) 
 confint(linmod)
+summary(linmod)
 
 #opgave 13
 
