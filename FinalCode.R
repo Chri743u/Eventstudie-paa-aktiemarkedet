@@ -268,67 +268,65 @@ Xi_724_finins=cbind(rep(1,724),df$Size,df$Market2Book,df$Debt2Assets,df$ROE, fin
 
 #Opgave 15
 hist(df$Size) #histogram over Size dataen
-lnSize = log(df$Size)
-hist(lnSize)
+lnSize = log(df$Size) #tager logaritmen af alle individuelle datapunkter i kolonnen med size data
+hist(lnSize) #histogram af kolonnen med dataen for logaritmen af size
 
 #Opgave 16
-Xi_724_size = cbind(rep(1,724),lnSize)
-(theta <- solve(t(Xi_724_size)%*%Xi_724_size,tol=1e-22)%*%t(Xi_724_size)%*%Yi_724)
-(linmod_2 = lm(df))
-size_alpha = theta[1]
-size_beta = theta[2]
-size_epsilon = (Yi_724-(size_alpha+size_beta*Xi_724_size))
+Xi_724_size = cbind(rep(1,724),lnSize) #binder logaritmen af size sammen med en vektor af 1-taller  
+(theta <- solve(t(Xi_724_size)%*%Xi_724_size,tol=1e-22)%*%t(Xi_724_size)%*%Yi_724)#udregner theta ud fra size
+size_alpha = theta[1] #angiver alpha for size
+size_beta = theta[2] #angiver beta for size
+size_epsilon = (Yi_724-(size_alpha+size_beta*Xi_724_size)) #udregner epsilon for size
 
-plot(lnSize,size_epsilon[,2])
-plot(lnSize,Yi_724)
-epsDiag=diag((size_epsilon[,2])^2)
+plot(lnSize,size_epsilon[,2]) #plotter lnsize på x-aksen og epsilon for size's anden kolonne på y-aksen
+plot(lnSize,Yi_724) #plotter lnsize på x-aksen og car-værdierne for de 724 virksomheder på y-aksen
+epsDiag=diag((size_epsilon[,2])^2) #laver en diagonal matrice med den anden kolonne for epsilon size værdierne i anden
 
-whiteEstimator1 = (solve(t(Xi_724_size)%*%Xi_724_size)%*%t(Xi_724_size)%*%epsDiag%*%Xi_724_size%*%solve(t(Xi_724_size)%*%Xi_724_size)) 
-whiteEstimator1
+whiteEstimator1 = (solve(t(Xi_724_size)%*%Xi_724_size)%*%t(Xi_724_size)%*%epsDiag%*%Xi_724_size%*%solve(t(Xi_724_size)%*%Xi_724_size)) #udregner whiteestimatoren
 
 #Hypotesetest
-size_muhat=mean(Yi_724)
-size_sigma2=sum((size_epsilon[,2])^2)/n
-size_stderror=sqrt(size_sigma2)
+size_muhat=mean(Yi_724) #udregner mean af alle car_hat værdierne for de 724 virksomheder
+size_sigma2=sum((size_epsilon[,2])^2)/n #udregner sigma2hat af size epsilonerne
+size_stderror=sqrt(size_sigma2) #udregner stderror af size epsilonerne
 size_teststat=abs(size_beta-0)/size_stderror #minus 0 fordi vi har sat mu=0 i nulhypotesen
-(size_pval=2*(1-pt(size_teststat,df=L1-1)))
-size_beta/(sqrt(size_sigma2/n))
+(size_pval=2*(1-pt(size_teststat,df=L1-1))) # udregner p-værdien med teststørrelsen "size-teststat" 
+size_beta/(sqrt(size_sigma2/n)) #en udregning der tager beta-værdien over sqrt af sigma2hat delt med n
 
 #white Hypotesetest
-white_size_epsilon =(Yi_724-(whiteEstimator1[1,1]+whiteEstimator1[2,2]*Xi_724_size))
-white_size_sigma2=sum((white_size_epsilon[,2]^2))/n
-white_size_stderror=sqrt(white_size_sigma2)
+white_size_epsilon =(Yi_724-(whiteEstimator1[1,1]+whiteEstimator1[2,2]*Xi_724_size)) #udregner white_size_epsilon ud fra vores white estimatorer
+white_size_sigma2=sum((white_size_epsilon[,2]^2))/n #udregner sigma2hat ud fra vores epsiloner af white estimatorene
+white_size_stderror=sqrt(white_size_sigma2) #udregner stderror af epsiloner ud fra whiteestimatoren
 white_size_teststat=abs(whiteEstimator1[2,2]-0)/white_size_stderror #minus 0 fordi vi har sat mu=0 i nulhypotesen
-(white_size_pval=2*(1-pt(white_size_teststat,df=L1-1)))
-plot(lnSize,white_size_epsilon[,2])
-plot(lnSize,Yi_724, pch=1, col="blue", xlab = "", ylab = "")
-points(lnSize, white_size_epsilon[,2], pch=4, col="orange")
-points(lnSize, size_epsilon[,2], pch=20, col="magenta")
+(white_size_pval=2*(1-pt(white_size_teststat,df=L1-1))) #udregner p-værdien med white_size_teststat som teststørrelse
+plot(lnSize,white_size_epsilon[,2]) #plotter lnsize på x-aksen og white size epsilon på y aksen
+plot(lnSize,Yi_724, pch=1, col="blue", xlab = "", ylab = "") #plotter lnsize på x-aksen og car_hat værdierne på y-aksen
+points(lnSize, white_size_epsilon[,2], pch=4, col="orange") #sætter punkter på plottet mellem lnsize og white_size_epsilon
+points(lnSize, size_epsilon[,2], pch=20, col="magenta") #sætter punkter på plottet mellem lnsize og size_epsilon
 
 
-#Opgave 18
+#Opgave 17
 
-ordered_size <- merged_data[with(merged_data,order(-Size)),]
-top10 = head(ordered_size,n=72)
-bot10 = tail(ordered_size,n=72)
+ordered_size <- merged_data[with(merged_data,order(-Size)),] #tager den merged data og sortere den så de største virksomheder er øverst og nedstiger derfra
+top10 = head(ordered_size,n=72) #tager de øverste 72 virksomheder
+bot10 = tail(ordered_size,n=72) #tager de nederste 72 virksomheder
 #sammenligner
-mean(top10$car_tau)
-mean(bot10$car_tau)
+mean(top10$car_tau) #tager gennemsnittet af de 72 største virksomheders car-værdier
+mean(bot10$car_tau) #tager gennemsnittet af de 72 mindste virksomheders car-værdier
 
-L3_car = vCAR_mat[,45:49]
-event_id = c(rep(1:897))
-L3_car_id = cbind(event_id, L3_car)
+L3_car = vCAR_mat[,45:49] #tager vCAR_mat værdierne der er placeret på kolonne 45-49
+event_id = c(rep(1:897)) #vektor af 1-taller
+L3_car_id = cbind(event_id, L3_car) #binder vCAR_mat værdierne og 1 tallerne sammen
 
-top10_id = cbind(rep(1),top10$event_id)
-bot10_id = cbind(rep(1),bot10$event_id)
-colnames(top10_id) <- c("mean","event_id")
-colnames(bot10_id) <- c("mean","event_id")
+top10_id = cbind(rep(1),top10$event_id) #binder vektor af 1-taller med event-id af de 72 største virksomheder
+bot10_id = cbind(rep(1),bot10$event_id) #binder vektor af 1-taller med event-id af de 72 mindste virksomheder
+colnames(top10_id) <- c("mean","event_id") #omdøber kolonnenavne (bliver brugt til nemmere at merge)
+colnames(bot10_id) <- c("mean","event_id") #omdøber kolonnenavne (bliver brugt til nemmere at merge)
 
-merged_top10 = merge(x=top10_id, y=L3_car_id, by=c("event_id"))
-merged_bot10 = merge(x=bot10_id, y=L3_car_id, by=c("event_id"))
+merged_top10 = merge(x=top10_id, y=L3_car_id, by=c("event_id")) #merger de 72 største virksomheder's event-id med kolonnerne af vCAR_mat 
+merged_bot10 = merge(x=bot10_id, y=L3_car_id, by=c("event_id")) #merger de 72 mindste virksomheder's event-id med kolonnerne af vCAR_mat
 
-merged_top10$mean <- ((rowSums(merged_top10[,3:7]))/5)
-merged_bot10$mean <- ((rowSums(merged_bot10[,3:7]))/5)
+merged_top10$mean <- ((rowSums(merged_top10[,3:7]))/5) #merger linje 325 med en kolonne der tager mean over rækkerne af vCAR_mat værdierne
+merged_bot10$mean <- ((rowSums(merged_bot10[,3:7]))/5) #merger linje 326 med en kolonne der tager mean over rækkerne af vCAR_mat værdierne
 
-top10_l3_mean = mean(merged_top10$mean)
-top10_l3_mean = mean(merged_bot10$mean)
+top10_l3_mean = mean(merged_top10$mean) #tager mean over kolonnen der bliver skabt på 328
+top10_l3_mean = mean(merged_bot10$mean) #tager mean over kolonnen der bliver skabt på 329
